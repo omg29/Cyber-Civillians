@@ -12,6 +12,7 @@ from crate import ExplosiveCrate
 from explosion import Explosion
 from powerup import PowerUp
 from hud import HUD
+
 #make the game
 pygame.init()
 pygame.mixer.pre_init(buffer=1024)
@@ -29,6 +30,8 @@ enemiesGroup = pygame.sprite.Group()
 cratesGroup = pygame.sprite.Group()
 explosionsGroup = pygame.sprite.Group()
 powerupsGroup = pygame.sprite.Group()
+
+#all countainer groups
 Player.containers = playerGroup
 WaterBalloon.containers = projectilesGroup
 Enemy.containers = enemiesGroup
@@ -60,15 +63,17 @@ def StartGame():
     enemy_spawn_timer_max = 100
     enemy_spawn_timer = 0
     enemy_spawn_speedup_timer = enemy_spawn_speedup_timer_max
+
+    #spawn crates and explosive crates
     for i in range(0, 10):
         ExplosiveCrate(screen, random.randint(0, game_width), random.randint(0, game_height), mr_player)
         Crate(screen, random.randint(0, game_width), random.randint(0, game_height), mr_player)
 
 #load and choose background
-background_image = pygame.image.load("assets/jordon-lee-3.jpg")
+background_image = pygame.image.load("assets/cyberpunk2.jpg")
 background_image = background_image
 
-#background
+#background music
 #mixer.music.load('assets/sfx/backgroundmusic.mp3')
 #mixer.music.play(-1)
 
@@ -91,6 +96,7 @@ while running:
 
     #in game function
     if game_started:
+        #move player
         keys = pygame.key.get_pressed()
         if keys[pygame.K_d]:
             mr_player.move(1, 0, cratesGroup)
@@ -100,6 +106,8 @@ while running:
             mr_player.move(0, -1, cratesGroup)
         if keys[pygame.K_s]:
             mr_player.move(0, 1, cratesGroup)
+        
+        #other player controls
         if pygame.mouse.get_pressed()[0]:
             mr_player.shoot()
         if keys[pygame.K_SPACE]:
@@ -107,8 +115,7 @@ while running:
         if pygame.mouse.get_pressed()[2]:
             mr_player.placeExplosiveCrate()
 
-
-
+        #speed up enemy spawn timer
         if enemy_spawn_speedup_timer <= 0:
             if enemy_spawn_timer_max > 20:
                 enemy_spawn_timer_max -= 10
