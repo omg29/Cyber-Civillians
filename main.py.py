@@ -71,7 +71,10 @@ def StartGame():
 
 #load and choose background
 background_image = pygame.image.load("assets/cyberpunk2.jpg")
-background_image = background_image
+
+#question cool down timer
+questionScreenCoolDown = 0
+questionScreenCoolDownMax = 20
 
 #background music
 #mixer.music.load('assets/sfx/backgroundmusic.mp3')
@@ -114,6 +117,13 @@ while running:
             mr_player.placeCrate()
         if pygame.mouse.get_pressed()[2]:
             mr_player.placeExplosiveCrate()
+        if keys[pygame.K_LSHIFT] and questionScreenCoolDown < 0:
+            if hud.showQuestions == False:
+                hud.showQuestions = True
+                questionScreenCoolDown = questionScreenCoolDownMax
+            else:
+                hud.showQuestions = False
+                questionScreenCoolDown = questionScreenCoolDownMax
 
         #speed up enemy spawn timer
         if enemy_spawn_speedup_timer <= 0:
@@ -139,6 +149,9 @@ while running:
                 new_enemy.x = game_width + new_enemy.image.get_width()
                 new_enemy.y = random.randint(0, game_height)
             enemy_spawn_timer = enemy_spawn_timer_max
+
+        #question screen cool down
+        questionScreenCoolDown -= 1    
 
         #update all groups
         for powerup in powerupsGroup:
@@ -173,4 +186,3 @@ while running:
     pygame.display.flip()
     clock.tick(40)
     pygame.display.set_caption("Cyber Civillians fps: " + str(clock.get_fps()))
-
