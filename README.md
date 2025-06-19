@@ -4,7 +4,7 @@
 
 ---
 
-![Cyber Civilians Banner](assets/logo_placeholder.png)  
+![Cyber Civilians Banner](assets/Title.png)  
 ***Replace `logo_placeholder.png` with your actual logo in the `assets/` folder.***
 
 ---
