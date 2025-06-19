@@ -1,95 +1,97 @@
 #import all libraries
-import pygame
-import random
-import toolbox
-import projectile
+import pygame                        # Main game library for graphics and sound
+import random                        # For randomness (e.g., random crate spawns, etc.)
+import toolbox                       # Custom helper functions (like rotation or angle calculations)
+import projectile                    # Contains classes for projectiles (WaterBalloon, etc.)
 
 #import all files
-from crate import Crate
-from crate import ExplosiveCrate
+from crate import Crate             # Import basic crate class
+from crate import ExplosiveCrate    # Import explosive crate class
 
 #player class
-class Player(pygame.sprite.Sprite):
+class Player(pygame.sprite.Sprite):    # Player is a sprite (movable object in the game)
+    
     #initialize function
-    def __init__(self, screen, x, y):
-        pygame.sprite.Sprite.__init__(self, self.containers)
-        self.screen = screen
-        self.x = x
-        self.y = y
+    def __init__(self, screen, x, y):     # Called when you create a Player
+        pygame.sprite.Sprite.__init__(self, self.containers)  # Add to sprite group
+        self.screen = screen              # Save the game screen to draw on it later
+        self.x = x                        # X position
+        self.y = y                        # Y position
+        
         #load and choose self.image
-        self.image = pygame.image.load("assets/Player.png")
-        self.image_defeated = pygame.image.load("assets/Enemy_01.png")
+        self.image = pygame.image.load("assets/Player.png")            # Load player image
+        self.image_defeated = pygame.image.load("assets/Enemy_01.png") # Image if player dies
 
         #player rect
-        self.rect = self.image.get_rect()
-        self.rect.center = (self.x, self.y)
+        self.rect = self.image.get_rect()        # Get rectangle around player image
+        self.rect.center = (self.x, self.y)      # Set starting position
 
         #player properties
-        self.speed = 8
-        self.angle = 0
-        self.shoot_cooldown = 0
-        self.shoot_cooldown_max = 10
+        self.speed = 8                 # Movement speed
+        self.angle = 0                 # Angle the player is aiming
+        self.shoot_cooldown = 0       # Time between shots
+        self.shoot_cooldown_max = 10  # Max cooldown before shooting again
 
         #plater health
-        self.health_max = 75
-        self.health = self.health_max
-        self.health_bar_width = self.image.get_width()
-        self.health_bar_height = 8
-        self.health_bar_green = pygame.Rect(0, 0, self.health_bar_width, self.health_bar_height)
-        self.health_bar_red = pygame.Rect(0, 0, self.health_bar_width, self.health_bar_height)
+        self.health_max = 75                  # Max health
+        self.health = self.health_max         # Start at full health
+        self.health_bar_width = self.image.get_width()  # Health bar is as wide as the image
+        self.health_bar_height = 8                     # Fixed height for health bar
+        self.health_bar_green = pygame.Rect(0, 0, self.health_bar_width, self.health_bar_height)  # Green part
+        self.health_bar_red = pygame.Rect(0, 0, self.health_bar_width, self.health_bar_height)    # Red background
 
         #ammo type and crate amounts
-        self.alive = True
-        self.crate_ammo = 10
-        self.explosive_crate_ammo = 10
-        self.crate_cooldown = 0
-        self.crate_cooldown_max = 10
-        self.shot_type = 'normal'
-        self.special_ammo = 0
-        self.score = 0
+        self.alive = True                    # Is player alive
+        self.crate_ammo = 10                 # Number of normal crates
+        self.explosive_crate_ammo = 10       # Number of explosive crates
+        self.crate_cooldown = 0              # Time before another crate can be placed
+        self.crate_cooldown_max = 10         # Max cooldown for crates
+        self.shot_type = 'normal'            # Type of ammo
+        self.special_ammo = 0                # Amount of special ammo (used for special shots)
+        self.score = 0                       # Player score
 
         #import all sound effects
-        self.sfx_shot = pygame.mixer.Sound("assets/sfx/shot.wav")
-        self.sfx_place = pygame.mixer.Sound("assets/sfx/bump.wav")
-        self.sfx_defeat = pygame.mixer.Sound("assets/sfx/electrocute.wav")
-        self.sfx_damage = pygame.mixer.Sound("assets/sfx/damage.wav")
-        self.sfx_cratea = pygame.mixer.Sound("assets/sfx/cratesa.wav")
-        self.sfx_ecratesa = pygame.mixer.Sound("assets/sfx/ecratesa.wav")
-        self.sfx_streama = pygame.mixer.Sound("assets/sfx/streama.wav")
-        self.sfx_bursta = pygame.mixer.Sound("assets/sfx/bursta.wav")
-        self.sfx_nocratesa = pygame.mixer.Sound("assets/sfx/nocratesa.wav")
-        self.sfx_noecratesa = pygame.mixer.Sound("assets/sfx/noecratesa.wav")
+        self.sfx_shot = pygame.mixer.Sound("assets/sfx/shot.wav")               # Sound when shooting
+        self.sfx_place = pygame.mixer.Sound("assets/sfx/bump.wav")              # Sound when placing crate
+        self.sfx_defeat = pygame.mixer.Sound("assets/sfx/electrocute.wav")      # Sound on death
+        self.sfx_damage = pygame.mixer.Sound("assets/sfx/damage.wav")           # Sound when hit
+        self.sfx_cratea = pygame.mixer.Sound("assets/sfx/cratesa.wav")          # Crate power-up sound
+        self.sfx_ecratesa = pygame.mixer.Sound("assets/sfx/ecratesa.wav")       # Explosive crate power-up
+        self.sfx_streama = pygame.mixer.Sound("assets/sfx/streama.wav")         # Stream shot power-up
+        self.sfx_bursta = pygame.mixer.Sound("assets/sfx/bursta.wav")           # Burst shot power-up
+        self.sfx_nocratesa = pygame.mixer.Sound("assets/sfx/nocratesa.wav")     # Out of normal crates
+        self.sfx_noecratesa = pygame.mixer.Sound("assets/sfx/noecratesa.wav")   # Out of explosive crates
 
         #player energy
-        self.energy = 1000
-        self.hud_font = pygame.font.SysFont('adobedevanagaribolditaliconpentype', 30)
-        self.energy_text = self.hud_font.render("Beep boop", True, (255, 255, 255))
+        self.energy = 1000                              # Energy for movement
+        self.hud_font = pygame.font.SysFont('adobedevanagaribolditaliconpentype', 30)  # Font for energy display
+        self.energy_text = self.hud_font.render("Beep boop", True, (255, 255, 255))    # Starting HUD text
     
     #update function
-    def update(self, enemies, explosions):
-        self.rect.center = (self.x, self.y)
+    def update(self, enemies, explosions):     # Runs every frame to update the player
+        self.rect.center = (self.x, self.y)    # Update position
 
         #check if player hit by an explosion
         for explosion in explosions:
             if explosion.damage and explosion.damage_player:
                 if self.rect.colliderect(explosion.rect):
-                    self.getHit(explosion.damage) 
+                    self.getHit(explosion.damage)   # Take damage
 
         #check if plater hit by an enemy  
         for enemy in enemies:
             if self.rect.colliderect(enemy.rect):
-                enemy.getHit(0)
-                self.getHit(enemy.damage)
+                enemy.getHit(0)               # Damage enemy slightly
+                self.getHit(enemy.damage)     # Take enemy damage
 
         #player cooldowns
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 1
         if self.crate_cooldown > 0:
             self.crate_cooldown -= 1 
+
+        #keep player on the screen
         if self.rect.left < 0:
             self.rect.left = 0
-        
-        #keep player on the screen
         if self.rect.right > self.screen.get_width():
             self.rect.right = self.screen.get_width()
         if self.rect.top < 0:
@@ -113,7 +115,7 @@ class Player(pygame.sprite.Sprite):
         image_to_draw, image_rect = toolbox.getRotatedImage(self.image, self.rect, self.angle)
         self.screen.blit(image_to_draw, image_rect)
 
-        #more health showing stuff
+        #draw health bar
         self.health_bar_red.x = self.rect.x
         self.health_bar_red.bottom = self.rect.y - 5
         pygame.draw.rect(self.screen, (255, 0, 0 ), self.health_bar_red)
@@ -154,7 +156,7 @@ class Player(pygame.sprite.Sprite):
     #player shooting function
     def shoot(self):
         if self.shoot_cooldown <= 0 and self.alive:
-            self.sfx_shot.play()
+            self.sfx_shot.play()  # play shooting sound
             if self.shot_type == 'normal':
                 projectile.WaterBalloon(self.screen, self.x, self.y, self.angle)
             elif self.shot_type == 'split' and self.special_ammo <= 0:
@@ -173,6 +175,8 @@ class Player(pygame.sprite.Sprite):
                 self.shot_type = 'normal'
                 self.shoot_cooldown_max = 10
                 self.shoot_cooldown = self.shoot_cooldown_max
+
+    #player gets hit
     def getHit(self, damage):
         if self.alive:
             self.sfx_damage.play()
@@ -181,6 +185,8 @@ class Player(pygame.sprite.Sprite):
                 self.health = 0
                 self.alive = False
                 self.sfx_defeat.play()
+
+    #place normal crate
     def placeCrate(self):
         if self.alive and self.crate_ammo > 0 and self.crate_cooldown <= 0:
             Crate(self.screen, self.x, self.y, self)
@@ -190,6 +196,7 @@ class Player(pygame.sprite.Sprite):
         if self.crate_ammo == 0:
             self.sfx_nocratesa.play()
 
+    #place explosive crate
     def placeExplosiveCrate(self):
         if self.alive and self.explosive_crate_ammo > 0 and self.crate_cooldown <= 0:
             ExplosiveCrate(self.screen, self.x, self.y, self)
@@ -198,41 +205,39 @@ class Player(pygame.sprite.Sprite):
             self.sfx_place.play()
         if self.explosive_crate_ammo == 0:
             self.sfx_noecratesa.play()
+
+    #activate power up
     def powerUp(self, power_type):
         if power_type == 'crateammo':
             self.sfx_cratea.play()
             self.crate_ammo += 10
             self.getScore(10)
-            
         elif power_type == 'explosiveammo':
             self.explosive_crate_ammo += 10
             self.getScore(10)
             self.sfx_ecratesa.play()
-            
         elif power_type == 'split':
             self.shot_type = 'split'
             special_ammo = 40
             self.getScore(20)
             self.shoot_cooldown_max = 20
-            
         elif power_type == 'normal':
             self.shot_type = 'normal'
             self.shoot_cooldown_max = 10
-            
         elif power_type == 'stream':
             self.shot_type = 'stream'
             self.special_ammo = 300
             self.shoot_cooldown_max = 3
             self.getScore(20)
             self.sfx_streama.play()
-            
         elif power_type == 'burst':
             self.shot_type = 'burst'
             self.special_ammo = 35
             self.shoot_cooldown_max = 50
             self.getScore(20)
             self.sfx_bursta.play()
+
+    #increase score
     def getScore(self, score):
         if self.alive:
             self.score += score
-
