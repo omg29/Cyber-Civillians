@@ -44,7 +44,7 @@ You play as a **digital defender in a futuristic cyberpunk world, tasked with fi
 ---
 
 ### 👨‍💻 **Made By**
-This is a projected developed my Quantum Echo Studios. Aaryan Dwivedi and Om Gagrani are co-founders and co-lead programmers of Cyber Civilians.
+This is a project developed my Quantum Echo Studios. Aaryan Dwivedi and Om Gagrani are co-founders and co-lead programmers of Cyber Civilians.
 We equally shared the vision, designed the core gameplay, coded the mechanics, and crafted the art assets.
 This project is the result of our collaborative passion and teamwork from concept to completion.
 
