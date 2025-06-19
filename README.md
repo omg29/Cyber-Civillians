@@ -40,14 +40,6 @@ You play as a **digital defender in a futuristic cyberpunk world, tasked with fi
 | **Place Crate**            | **`Spacebar`**           |
 | **Place Explosive Crate**  | **Right Mouse Button**    |
 | **Toggle Question Screen** | **`Left Shift`**         |
-
----
-
-### 👨‍💻 **Made By**
-This is a project developed my Quantum Echo Studios. Aaryan Dwivedi and Om Gagrani are co-founders and co-lead programmers of Cyber Civilians.
-We equally shared the vision, designed the core gameplay, coded the mechanics, and crafted the art assets.
-This project is the result of our collaborative passion and teamwork from concept to completion.
-
 ---
 ## 🛠️ **How to Run**
 
@@ -59,3 +51,10 @@ This project is the result of our collaborative passion and teamwork from concep
 ### 🔧 **Install Dependencies**
 ```bash
 pip install pygame
+```
+---
+
+### 👨‍💻 **Made By**
+This is a project developed my Quantum Echo Studios. Aaryan Dwivedi and Om Gagrani are co-founders and co-lead programmers of Cyber Civilians.
+We equally shared the vision, designed the core gameplay, coded the mechanics, and crafted the art assets.
+This project is the result of our collaborative passion and teamwork from concept to completion.
