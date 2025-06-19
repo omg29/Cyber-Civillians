@@ -32,7 +32,7 @@ class Player(pygame.sprite.Sprite):    # Player is a sprite (movable object in t
         self.shoot_cooldown = 0       # Time between shots
         self.shoot_cooldown_max = 10  # Max cooldown before shooting again
 
-        #plater health
+        #player health
         self.health_max = 75                  # Max health
         self.health = self.health_max         # Start at full health
         self.health_bar_width = self.image.get_width()  # Health bar is as wide as the image

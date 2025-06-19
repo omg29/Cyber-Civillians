@@ -107,7 +107,7 @@ while running:
 
     if not game_started:
         events = pygame.event.get()
-        StartGame()                         # Start the game if not started
+        StartGame()
         for event in events:
             if event.type == pygame.KEYDOWN:
                 StartGame()                 # Restart game on any key press
